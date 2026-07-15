@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero-card">
+        <h1>Favorite Quotes</h1>
+        <p class="subtitle">Collect and search the words that matter to you.</p>
+
+        <form action="/" method="GET" class="search-form">
+          <label for="q" class="sr-only">Search quotes</label>
+          <input
+            id="q"
+            name="q"
+            type="text"
+            value="<%= searchTerm %>"
+            placeholder="Search by quote text or author"
+          />
+          <button type="submit">Search</button>
+          <% if (searchTerm && searchTerm.trim()) { %>
+            <a class="clear-link" href="/">Clear</a>
+          <% } %>
+        </form>
+      </section>
+
+      <section class="add-card">
+        <h2>Add a Quote</h2>
+
+        <% if (error) { %>
+          <p class="error"><%= error %></p>
+        <% } %>
+
+        <form action="/quotes<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>" method="POST" class="quote-form">
+          <label for="quoteText">Quote</label>
+          <textarea
+            id="quoteText"
+            name="quoteText"
+            rows="4"
+            placeholder="Type your favorite quote"
+            required
+          ><%= form.quoteText %></textarea>
+
+          <label for="author">Author (optional)</label>
+          <input
+            id="author"
+            name="author"
+            type="text"
+            value="<%= form.author %>"
+            placeholder="Who said it?"
+          />
+
+          <button type="submit">Save Quote</button>
+        </form>
+      </section>
+
+      <section class="quotes-card">
+        <h2><%= searchTerm && searchTerm.trim() ? `Results for "${searchTerm}"` : "All Quotes" %></h2>
+
+        <% if (!quotes.length) { %>
+          <p class="empty-state">No quotes yet. Add your first one above.</p>
+        <% } else { %>
+          <ul class="quote-list">
+            <% quotes.forEach((quote) => { %>
+              <li class="quote-item">
+                <blockquote><%= quote.quote_text %></blockquote>
+                <p class="meta">
+                  <span><%= quote.author || "Unknown" %></span>
+                  <span><%= new Date(quote.created_at).toLocaleDateString() %></span>
+                </p>
+              </li>
+            <% }); %>
+          </ul>
+        <% } %>
+      </section>
+    </main>
+  </body>
+</html>
