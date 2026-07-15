@@ -11,7 +11,7 @@ A simple Node.js app that stores and searches your favorite quotes using Postgre
 
 ## Requirements
 
-- Node.js 18+
+- Node.js 24.16.0
 - A Neon Postgres database URL
 
 ## Setup
@@ -41,4 +41,4 @@ A simple Node.js app that stores and searches your favorite quotes using Postgre
 
 - Set environment variable `DATABASE_URL` in your hosting panel.
 - Ensure your Node app startup command points to `src/server.js`.
-- If your hosting supports only specific Node versions, use Node 18 or newer.
+- Set the Node.js runtime version to `24.16.0`.
