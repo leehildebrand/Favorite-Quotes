@@ -41,13 +41,15 @@
           <ul class="quote-list">
             <% quotes.forEach((quote) => { %>
               <li class="quote-item">
-                <blockquote><%= quote.quote_text %></blockquote>
+                <div class="quote-line">
+                  <blockquote><%= quote.quote_text %></blockquote>
+                  <a class="quote-manage-link" href="/quotes/<%= quote.id %>/edit<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>">Manage</a>
+                </div>
                 <p class="meta">
                   <% if (quote.author) { %>
                     <span><%= quote.author %></span>
                   <% } %>
                 </p>
-                <a class="quote-manage-link" href="/quotes/<%= quote.id %>/edit<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>">Manage</a>
               </li>
             <% }); %>
           </ul>

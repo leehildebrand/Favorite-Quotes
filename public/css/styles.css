@@ -174,9 +174,16 @@ button:hover {
   background: #f5f8ff;
 }
 
+.quote-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
 .quote-manage-link {
   display: inline-block;
-  margin-top: 0.28rem;
+  margin-top: 0;
   font-size: 0.82rem;
   font-weight: 400;
   letter-spacing: 0;

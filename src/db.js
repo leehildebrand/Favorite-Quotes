@@ -34,7 +34,7 @@ async function getQuotes(search = "") {
       `
       SELECT id, quote_text, author, created_at
       FROM quotes
-      ORDER BY created_at DESC;
+      ORDER BY created_at ASC, id ASC;
       `
     );
 
@@ -46,7 +46,7 @@ async function getQuotes(search = "") {
     SELECT id, quote_text, author, created_at
     FROM quotes
     WHERE quote_text ILIKE $1 OR COALESCE(author, '') ILIKE $1
-    ORDER BY created_at DESC;
+    ORDER BY created_at ASC, id ASC;
     `,
     [`%${trimmedSearch}%`]
   );
