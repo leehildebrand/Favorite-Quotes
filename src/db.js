@@ -54,6 +54,19 @@ async function getQuotes(search = "") {
   return result.rows;
 }
 
+async function getQuoteById(id) {
+  const result = await pool.query(
+    `
+    SELECT id, quote_text, author, created_at
+    FROM quotes
+    WHERE id = $1;
+    `,
+    [id]
+  );
+
+  return result.rows[0] || null;
+}
+
 async function addQuote(quoteText, author) {
   await pool.query(
     `
@@ -64,8 +77,33 @@ async function addQuote(quoteText, author) {
   );
 }
 
+async function updateQuote(id, quoteText, author) {
+  await pool.query(
+    `
+    UPDATE quotes
+    SET quote_text = $2,
+        author = NULLIF($3, '')
+    WHERE id = $1;
+    `,
+    [id, quoteText.trim(), author.trim()]
+  );
+}
+
+async function deleteQuote(id) {
+  await pool.query(
+    `
+    DELETE FROM quotes
+    WHERE id = $1;
+    `,
+    [id]
+  );
+}
+
 module.exports = {
   initializeDatabase,
   getQuotes,
+  getQuoteById,
   addQuote,
+  updateQuote,
+  deleteQuote,
 };

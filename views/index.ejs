@@ -9,8 +9,10 @@
   <body>
     <main class="page-shell">
       <section class="hero-card">
-        <h1>Favorite Quotes</h1>
-        <p class="subtitle">Collect and search the words that matter to you.</p>
+        <div class="hero-topbar">
+          <h1>Favorite Quotes</h1>
+          <a class="button-link" href="/new<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>">New Quote</a>
+        </div>
 
         <form action="/" method="GET" class="search-form">
           <label for="q" class="sr-only">Search quotes</label>
@@ -28,38 +30,10 @@
         </form>
       </section>
 
-      <section class="add-card">
-        <h2>Add a Quote</h2>
-
-        <% if (error) { %>
-          <p class="error"><%= error %></p>
-        <% } %>
-
-        <form action="/quotes<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>" method="POST" class="quote-form">
-          <label for="quoteText">Quote</label>
-          <textarea
-            id="quoteText"
-            name="quoteText"
-            rows="4"
-            placeholder="Type your favorite quote"
-            required
-          ><%= form.quoteText %></textarea>
-
-          <label for="author">Author (optional)</label>
-          <input
-            id="author"
-            name="author"
-            type="text"
-            value="<%= form.author %>"
-            placeholder="Who said it?"
-          />
-
-          <button type="submit">Save Quote</button>
-        </form>
-      </section>
-
       <section class="quotes-card">
-        <h2><%= searchTerm && searchTerm.trim() ? `Results for "${searchTerm}"` : "All Quotes" %></h2>
+        <% if (searchTerm && searchTerm.trim()) { %>
+          <h2>Results for "<%= searchTerm %>"</h2>
+        <% } %>
 
         <% if (!quotes.length) { %>
           <p class="empty-state">No quotes yet. Add your first one above.</p>
@@ -69,9 +43,11 @@
               <li class="quote-item">
                 <blockquote><%= quote.quote_text %></blockquote>
                 <p class="meta">
-                  <span><%= quote.author || "Unknown" %></span>
-                  <span><%= new Date(quote.created_at).toLocaleDateString() %></span>
+                  <% if (quote.author) { %>
+                    <span><%= quote.author %></span>
+                  <% } %>
                 </p>
+                <a class="quote-manage-link" href="/quotes/<%= quote.id %>/edit<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>">Manage</a>
               </li>
             <% }); %>
           </ul>
