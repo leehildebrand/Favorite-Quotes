@@ -40,5 +40,6 @@ A simple Node.js app that stores and searches your favorite quotes using Postgre
 ## Notes for Namecheap Shared Hosting
 
 - Set environment variable `DATABASE_URL` in your hosting panel.
-- Ensure your Node app startup command points to `src/server.js`.
+- Ensure your Node app startup command points to `server.js`.
 - Set the Node.js runtime version to `24.16.0`.
+- This app uses Neon HTTP driver (`@neondatabase/serverless`), which works over HTTPS when outbound `5432` is blocked.
