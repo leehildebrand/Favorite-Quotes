@@ -10,24 +10,22 @@
     <main class="page-shell">
       <section class="hero-card">
         <div class="hero-topbar">
-          <h1>Favorite Quotes</h1>
-          <a class="button-link" href="/new<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>">New Quote</a>
+          <form action="/" method="GET" class="search-form">
+            <label for="q" class="sr-only">Search quotes</label>
+            <input
+              id="q"
+              name="q"
+              type="text"
+              value="<%= searchTerm %>"
+              placeholder="Search by quote text or author"
+            />
+            <button type="submit">Search</button>
+            <a class="button-link" href="/new<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>">New Quote</a>
+            <% if (searchTerm && searchTerm.trim()) { %>
+              <a class="clear-link" href="/">Clear</a>
+            <% } %>
+          </form>
         </div>
-
-        <form action="/" method="GET" class="search-form">
-          <label for="q" class="sr-only">Search quotes</label>
-          <input
-            id="q"
-            name="q"
-            type="text"
-            value="<%= searchTerm %>"
-            placeholder="Search by quote text or author"
-          />
-          <button type="submit">Search</button>
-          <% if (searchTerm && searchTerm.trim()) { %>
-            <a class="clear-link" href="/">Clear</a>
-          <% } %>
-        </form>
       </section>
 
       <section class="quotes-card">
