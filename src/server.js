@@ -63,7 +63,7 @@ app.post("/quotes", async (req, res, next) => {
 
     await addQuote(quoteText, author);
 
-    return res.redirect("/");
+    return res.redirect("/#quotes-end");
   } catch (error) {
     next(error);
   }

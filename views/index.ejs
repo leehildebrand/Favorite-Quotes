@@ -10,7 +10,7 @@
     <main class="page-shell">
       <section class="hero-card">
         <div class="hero-topbar">
-          <form action="/" method="GET" class="search-form">
+          <div class="search-form">
             <label for="q" class="sr-only">Search quotes</label>
             <input
               id="q"
@@ -18,13 +18,13 @@
               type="text"
               value="<%= searchTerm %>"
               placeholder="Search by quote text or author"
+              autocomplete="off"
             />
-            <button type="submit">Search</button>
             <a class="button-link" href="/new<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>">New Quote</a>
             <% if (searchTerm && searchTerm.trim()) { %>
               <a class="clear-link" href="/">Clear</a>
             <% } %>
-          </form>
+          </div>
         </div>
       </section>
 
@@ -36,23 +36,50 @@
         <% if (!quotes.length) { %>
           <p class="empty-state">No quotes yet. Add your first one above.</p>
         <% } else { %>
+          <p class="empty-state" id="no-results" hidden>No quotes match your search.</p>
           <ul class="quote-list">
             <% quotes.forEach((quote) => { %>
-              <li class="quote-item">
-                <div class="quote-line">
-                  <blockquote><%= quote.quote_text %></blockquote>
-                  <a class="quote-manage-link" href="/quotes/<%= quote.id %>/edit<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>">Manage</a>
-                </div>
+              <li class="quote-item" data-search-value="<%= `${quote.quote_text} ${quote.author || ''}`.toLowerCase() %>">
+                <blockquote><%= quote.quote_text %></blockquote>
                 <p class="meta">
                   <% if (quote.author) { %>
                     <span><%= quote.author %></span>
                   <% } %>
                 </p>
+                <a class="quote-manage-link" href="/quotes/<%= quote.id %>/edit<%= searchTerm && searchTerm.trim() ? `?q=${encodeURIComponent(searchTerm.trim())}` : '' %>">Manage</a>
               </li>
             <% }); %>
           </ul>
+          <div id="quotes-end" aria-hidden="true"></div>
         <% } %>
       </section>
     </main>
+    <% if (quotes.length) { %>
+      <script>
+        (() => {
+          const searchInput = document.getElementById('q');
+          const items = Array.from(document.querySelectorAll('.quote-item'));
+          const noResults = document.getElementById('no-results');
+
+          const filterQuotes = () => {
+            const query = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            items.forEach((item) => {
+              const matches = !query || item.dataset.searchValue.includes(query);
+              item.hidden = !matches;
+              if (matches) {
+                visibleCount += 1;
+              }
+            });
+
+            noResults.hidden = visibleCount !== 0 || !query;
+          };
+
+          searchInput.addEventListener('input', filterQuotes);
+          filterQuotes();
+        })();
+      </script>
+    <% } %>
   </body>
 </html>

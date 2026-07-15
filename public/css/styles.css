@@ -75,7 +75,7 @@ h2 {
 }
 
 .search-form {
-  grid-template-columns: 1fr auto auto auto;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
 }
 
