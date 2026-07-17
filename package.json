@@ -2,19 +2,19 @@
   "name": "favorite-quotes",
   "version": "1.0.0",
   "description": "A Node.js quotes app using Neon Postgres",
-  "main": "src/server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node server.js",
     "dev": "nodemon src/server.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": "24.16.0"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^4.19.2",
-    "pg": "^8.12.0"
+    "express": "^4.19.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

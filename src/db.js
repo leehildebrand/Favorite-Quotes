@@ -1,4 +1,4 @@
-const { Pool } = require("pg");
+const { neon } = require("@neondatabase/serverless");
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -6,15 +6,10 @@ if (!connectionString) {
   throw new Error("Missing DATABASE_URL. Add it to your .env file.");
 }
 
-const pool = new Pool({
-  connectionString,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+const sql = neon(connectionString);
 
 async function initializeDatabase() {
-  const createTableQuery = `
+  await sql`
     CREATE TABLE IF NOT EXISTS quotes (
       id SERIAL PRIMARY KEY,
       quote_text TEXT NOT NULL,
@@ -22,50 +17,66 @@ async function initializeDatabase() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
   `;
-
-  await pool.query(createTableQuery);
 }
 
 async function getQuotes(search = "") {
   const trimmedSearch = search.trim();
 
   if (!trimmedSearch) {
-    const result = await pool.query(
-      `
+    return sql`
       SELECT id, quote_text, author, created_at
       FROM quotes
-      ORDER BY created_at DESC;
-      `
-    );
-
-    return result.rows;
+      ORDER BY created_at ASC, id ASC;
+    `;
   }
 
-  const result = await pool.query(
-    `
+  const pattern = `%${trimmedSearch}%`;
+  return sql`
     SELECT id, quote_text, author, created_at
     FROM quotes
-    WHERE quote_text ILIKE $1 OR COALESCE(author, '') ILIKE $1
-    ORDER BY created_at DESC;
-    `,
-    [`%${trimmedSearch}%`]
-  );
+    WHERE quote_text ILIKE ${pattern} OR COALESCE(author, '') ILIKE ${pattern}
+    ORDER BY created_at ASC, id ASC;
+  `;
+}
 
-  return result.rows;
+async function getQuoteById(id) {
+  const rows = await sql`
+    SELECT id, quote_text, author, created_at
+    FROM quotes
+    WHERE id = ${id};
+  `;
+
+  return rows[0] || null;
 }
 
 async function addQuote(quoteText, author) {
-  await pool.query(
-    `
+  await sql`
     INSERT INTO quotes (quote_text, author)
-    VALUES ($1, NULLIF($2, ''));
-    `,
-    [quoteText.trim(), author.trim()]
-  );
+    VALUES (${quoteText.trim()}, NULLIF(${author.trim()}, ''));
+  `;
+}
+
+async function updateQuote(id, quoteText, author) {
+  await sql`
+    UPDATE quotes
+    SET quote_text = ${quoteText.trim()},
+        author = NULLIF(${author.trim()}, '')
+    WHERE id = ${id};
+  `;
+}
+
+async function deleteQuote(id) {
+  await sql`
+    DELETE FROM quotes
+    WHERE id = ${id};
+  `;
 }
 
 module.exports = {
   initializeDatabase,
   getQuotes,
+  getQuoteById,
   addQuote,
+  updateQuote,
+  deleteQuote,
 };
